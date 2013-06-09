@@ -9,7 +9,6 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <Title Value="TetrisAttack"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -26,12 +25,12 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="../TAMCR"/>
+            <Filename Value="../bin32/TAMCR"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir);$Env(ZENGL)/headers"/>
-            <OtherUnitFiles Value="$Env(ZENGL)/headers;$Env(ZENGL)/extra;$Env(ZENGL)/src;$Env(ZENGL)/lib/jpeg/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/msvcrt/$(TargetCPU);$Env(ZENGL)/lib/ogg/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/theora/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/zlib/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/zip/$(TargetCPU)-$(TargetOS)"/>
-            <UnitOutputDirectory Value="../lib/$(TargetCPU)-$(TargetOS)"/>
+            <OtherUnitFiles Value="$Env(ZENGL)/extra;$Env(ZENGL)/src;$Env(ZENGL)/headers;$Env(ZENGL)/lib/jpeg/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/msvcrt/$(TargetCPU);$Env(ZENGL)/lib/ogg/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/theora/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/zlib/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/zip/$(TargetCPU)-$(TargetOS);..\Src"/>
+            <UnitOutputDirectory Value="lib"/>
           </SearchPaths>
           <Parsing>
             <SyntaxOptions>
@@ -62,7 +61,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="../TAMCR"/>
+            <Filename Value="../bin32/TAMCR"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir);$Env(ZENGL)/headers"/>
@@ -99,7 +98,7 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="2">
+    <Units Count="6">
       <Unit0>
         <Filename Value="TetrisAttackMCRemakeProject.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -110,6 +109,26 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="GameApplicationUnit"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="..\Src\GameLogUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="GameLogUnit"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\Src\GameConstUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="GameConstUnit"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\Src\GameTurretUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="GameTurretUnit"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\Src\GameThingUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="GameThingUnit"/>
+      </Unit5>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
