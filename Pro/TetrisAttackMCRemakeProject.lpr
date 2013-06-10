@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   GameApplicationUnit, GameLogUnit, GameConstUnit, GameTurretUnit,
   GameThingUnit, GameBullletUnit, GameExplosionAnimation, GameEmitFigure,
-GameFigureUnit;
+GameFigureUnit, GamePresentationUnit, GameStateUnit;
 
 var
   Application: TGameApplication;

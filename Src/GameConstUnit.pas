@@ -10,12 +10,18 @@ const
   DefaultBulletSpeedModifier = 2;
   DefaultExplosionRadius = 60;
   DefaultExplosionAnimationTime = 1000;
-  DefaultExplosionAnimationColor = $FF0000;
-  DefaultExplosionAnimationAlphaColor = 255 div 3;
+  DefaultExplosionAnimationColor = $FFFF00;
+  DefaultExplosionAnimationOuterColor = $FF0000;
+  DefaultExplosionAnimationAlphaColor = 255;
+  DefaultExplosionAnimationOuterAlphaColor = 255 div 4;
   DefaultInitialEmitTime = 4000;
   DefaultInitialFallSpeed = 30;
   DefaultFigureWidth = 10;
   DefaultFigureColor = $FFFF00;
+  DefaultAimCursorRadius = 16;
+  DefaultInitialLives = 10;
+  DefaultFontName = 'Anonymous Pro-Regular-11pt.zfi';
+  DefaultReloadTime = 500;
 
 implementation
 

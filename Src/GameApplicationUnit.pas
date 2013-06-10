@@ -7,6 +7,8 @@ uses
   fgl,
   {$Region ZenGL units}
   zgl_main,
+  zgl_render,
+  zgl_render_2d,
   zgl_window,
   zgl_screen,
   zgl_primitives_2d,
@@ -19,7 +21,9 @@ uses
   GameThingUnit,
   GameBullletUnit,
   GameEmitFigure,
-  GameExplosionAnimation;
+  GameExplosionAnimation,
+  GamePresentationUnit,
+  GameStateUnit;
 
 type
 
@@ -27,20 +31,24 @@ type
 
   TGameApplication = class
   protected
+    FState: TGameState;
     FTurret: TTurret;
     FThings: TGameThingList;
     FEmitter: TGameEmitFigure;
+    FPresentation: TPresentation;
     procedure StartupEngine; inline;
-    procedure DrawVisualFieldSeparator; inline;
     procedure DrawTurret; inline;
     procedure UserShoot; inline;
     procedure UserExplode; inline;
-    procedure PerformExplosion(const aX, aY: Single); inline;
+    procedure PerformBulletExplosion(const aX, aY: Single); inline;
+    procedure ExplodeThings(const aX, aY, aR: Single);
     procedure DrawThings; inline;
     procedure UpdateThings(const aTime: Double); inline;
     procedure RemoveDeadThings; inline;
+    procedure ReleaseThings;
   public
     constructor Create;
+    procedure OnEngineStartup; inline;
     procedure Run; inline;
     procedure Draw; inline;
     procedure Update(const aTime: Double); inline;
@@ -51,6 +59,11 @@ var
   GlobalGameApplication: TGameApplication;
 
 implementation
+
+procedure GlobalInit;
+begin
+  GlobalGameApplication.OnEngineStartup;
+end;
 
 procedure GlobalDraw;
 begin
@@ -66,29 +79,32 @@ end;
 
 procedure TGameApplication.StartupEngine;
 begin
-  zgl_Reg(SYS_DRAW, @GlobalDraw );
+  zgl_Reg(SYS_LOAD, @GlobalInit);
+  zgl_Reg(SYS_DRAW, @GlobalDraw);
   zgl_Reg(SYS_UPDATE, @GlobalUpdate);
   wnd_SetCaption(ApplicationWindowTitle);
   scr_SetOptions(800, 600, REFRESH_MAXIMUM, False, False);
 end;
 
-procedure TGameApplication.DrawVisualFieldSeparator;
-begin
-  pr2d_Line(600, 0, 600, 600, $FFFFFF);
-end;
-
 procedure TGameApplication.DrawTurret;
 begin
   FTurret.Draw;
+  FTurret.DrawAimCursor;
 end;
 
 procedure TGameApplication.UserShoot;
 var
   bullet: TGameBullet;
 begin
-  WriteLogMessage('Now shooting...');
-  bullet := TGameBullet.Create(FTurret);
-  FThings.Add(bullet);
+  if
+    FState.ReloadTimeLeft <= 0
+  then
+  begin
+    WriteLogMessage('Now shooting...');
+    bullet := TGameBullet.Create(FTurret);
+    FThings.Add(bullet);
+    FState.ReloadTimeLeft := DefaultReloadTime;
+  end;
 end;
 
 procedure TGameApplication.UserExplode;
@@ -114,17 +130,35 @@ begin
     bullet <> nil
   then
   begin
-    PerformExplosion(bullet.X, bullet.Y);
+    PerformBulletExplosion(bullet.X, bullet.Y);
     bullet.Free;
   end;
 end;
 
-procedure TGameApplication.PerformExplosion(const aX, aY: Single);
+procedure TGameApplication.PerformBulletExplosion(const aX, aY: Single);
 var
   animation: TExplosionAnimation;
 begin
-  animation := TExplosionAnimation.Create(aX, aY);
+  animation := TBulletExplosionAnimation.Create(aX, aY);
   FThings.Add(animation);
+  ExplodeThings(aX, aY, animation.R);
+end;
+
+procedure TGameApplication.ExplodeThings(const aX, aY, aR: Single);
+var
+  i: Integer;
+  thing: TGameThing;
+begin
+  for i := FThings.Count - 1 downto 0 do
+  begin
+    thing := FThings[i];
+    if
+      thing.Touches(aX, aY, aR)
+    then
+    begin
+      FThings.Delete(i);
+    end;
+  end;
 end;
 
 procedure TGameApplication.DrawThings;
@@ -165,32 +199,50 @@ begin
   end;
 end;
 
+procedure TGameApplication.ReleaseThings;
+var
+  i: Integer;
+begin
+  for i := 0 to FThings.Count - 1 do
+    FThings[i].Free;
+  FThings.Clear;
+end;
+
 constructor TGameApplication.Create;
 begin
   inherited Create;
   GlobalGameApplication := self;
   StartupEngine;
+  FState := TGameState.Create;
+  FTurret := TTurret.Create;
   FThings := TGameThingList.Create;
   FEmitter := TGameEmitFigure.Create(FThings);
+  FPresentation := TPresentation.Create(FState);
+end;
+
+procedure TGameApplication.OnEngineStartup;
+begin
+  FPresentation.Startup;
 end;
 
 procedure TGameApplication.Run;
 begin
-  FTurret := TTurret.Create;
   zgl_Init;
 end;
 
 procedure TGameApplication.Draw;
 begin
-  DrawVisualFieldSeparator;
-  DrawTurret;
+  batch2d_Begin;
   DrawThings;
+  FPresentation.Draw;
+  DrawTurret;
+  batch2d_End;
 end;
 
 procedure TGameApplication.Update(const aTime: Double);
 begin
   if
-    mouse_Click(M_BLEFT)
+    mouse_Down(M_BLEFT)
   then
     UserShoot;
   if
@@ -198,6 +250,7 @@ begin
   then
     UserExplode;
   mouse_ClearState;
+  FState.Update(aTime);
   FEmitter.Update(aTime);
   UpdateThings(aTime);
   RemoveDeadThings;
@@ -205,14 +258,17 @@ end;
 
 destructor TGameApplication.Destroy;
 begin
+  FPresentation.Free;
   FEmitter.Free;
+  ReleaseThings;
   FThings.Free;
   FTurret.Free;
+  FState.Free;
   inherited Destroy;
 end;
 
 end.
 
-// лалка
+// лал
 
 

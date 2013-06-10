@@ -33,6 +33,7 @@ type
     property RotationPointY: Single read GetRotationPointY;
     property AimLength: Single read GetAimLength;
     procedure Draw; inline;
+    procedure DrawAimCursor;
   end;
 
 implementation
@@ -77,7 +78,40 @@ end;
 procedure TTurret.Draw;
 begin
   pr2d_Circle(300, 600, DefaultTurretRadius, DefaultTurretColor, 255 div 2);
-  pr2d_Line(300, 600, AimStickX, AimStickY, $FF0000, 255 div 2);
+  pr2d_Line(300, 600, AimStickX, AimStickY, $FF0000, 255 div 3 * 2);
+end;
+
+procedure TTurret.DrawAimCursor;
+begin
+  pr2d_Circle(mouse_X, mouse_Y, DefaultAimCursorRadius, $FF0000, 255 div 3 * 2);
+  pr2d_Line(
+    mouse_X - DefaultAimCursorRadius div 2,
+    mouse_Y,
+    mouse_X - DefaultAimCursorRadius div 2 * 3,
+    mouse_Y,
+    $FF0000, 255 div 2
+  );
+  pr2d_Line(
+    mouse_X + DefaultAimCursorRadius div 2,
+    mouse_Y,
+    mouse_X + DefaultAimCursorRadius div 2 * 3,
+    mouse_Y,
+    $FF0000, 255 div 2
+  );
+  pr2d_Line(
+    mouse_X,
+    mouse_Y - DefaultAimCursorRadius div 2,
+    mouse_X,
+    mouse_Y - DefaultAimCursorRadius div 2 * 3,
+    $FF0000, 255 div 2
+  );
+  pr2d_Line(
+    mouse_X,
+    mouse_Y + DefaultAimCursorRadius div 2,
+    mouse_X,
+    mouse_Y + DefaultAimCursorRadius div 2 * 3,
+    $FF0000, 255 div 2
+  );
 end;
 
 end.

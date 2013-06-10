@@ -13,9 +13,10 @@ type
   protected
     FDead: Boolean;
   public
+    property Dead: Boolean read FDead;
     procedure Draw; virtual;
     procedure Update(const aTime: Double); virtual;
-    property Dead: Boolean read FDead;
+    function Touches(const aX, aY, aR: Single): Boolean; virtual;
   end;
 
   TGameThingList = specialize TFPGList<TGameThing>;
@@ -32,6 +33,11 @@ end;
 procedure TGameThing.Update(const aTime: Double);
 begin
 
+end;
+
+function TGameThing.Touches(const aX, aY, aR: Single): Boolean;
+begin
+  result := False;
 end;
 
 end.

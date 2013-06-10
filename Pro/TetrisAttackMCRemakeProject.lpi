@@ -38,16 +38,23 @@
             </SyntaxOptions>
           </Parsing>
           <CodeGeneration>
+            <SmartLinkUnit Value="True"/>
             <Checks>
               <IOChecks Value="True"/>
               <RangeChecks Value="True"/>
               <OverflowChecks Value="True"/>
               <StackChecks Value="True"/>
             </Checks>
+            <VerifyObjMethodCallValidity Value="True"/>
             <Optimizations>
               <OptimizationLevel Value="0"/>
             </Optimizations>
           </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <UseHeaptrc Value="True"/>
+            </Debugging>
+          </Linking>
           <Other>
             <CompilerMessages>
               <MsgFileName Value=""/>
@@ -98,7 +105,7 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="10">
+    <Units Count="12">
       <Unit0>
         <Filename Value="TetrisAttackMCRemakeProject.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -149,6 +156,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="GameFigureUnit"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="..\Src\GamePresentationUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="GamePresentationUnit"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\Src\GameStateUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="GameStateUnit"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

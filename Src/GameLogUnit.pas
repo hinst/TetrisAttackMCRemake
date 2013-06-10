@@ -2,6 +2,9 @@ unit GameLogUnit;
 
 interface
 
+uses
+  SysUtils;
+
 procedure WriteLogMessage(const s: string);
 
 implementation
