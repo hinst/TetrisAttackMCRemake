@@ -29,7 +29,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir);$Env(ZENGL)/headers"/>
-            <OtherUnitFiles Value="$Env(ZENGL)/extra;$Env(ZENGL)/src;$Env(ZENGL)/headers;$Env(ZENGL)/lib/jpeg/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/msvcrt/$(TargetCPU);$Env(ZENGL)/lib/ogg/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/theora/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/zlib/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/zip/$(TargetCPU)-$(TargetOS);..\Src;..\..\P-GameMath\Src"/>
+            <OtherUnitFiles Value="$Env(ZENGL)/extra;$Env(ZENGL)/src;$Env(ZENGL)/headers;$Env(ZENGL)/lib/jpeg/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/msvcrt/$(TargetCPU);$Env(ZENGL)/lib/ogg/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/theora/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/zlib/$(TargetCPU)-$(TargetOS);$Env(ZENGL)/lib/zip/$(TargetCPU)-$(TargetOS);..\Src"/>
             <UnitOutputDirectory Value="lib"/>
           </SearchPaths>
           <Parsing>
@@ -98,7 +98,7 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="7">
+    <Units Count="10">
       <Unit0>
         <Filename Value="TetrisAttackMCRemakeProject.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -130,10 +130,25 @@
         <UnitName Value="GameThingUnit"/>
       </Unit5>
       <Unit6>
-        <Filename Value="..\..\P-GameMath\Src\gamemathunit.pas"/>
+        <Filename Value="..\Src\GameBullletUnit.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="GameMathUnit"/>
+        <UnitName Value="GameBullletUnit"/>
       </Unit6>
+      <Unit7>
+        <Filename Value="..\Src\GameExplosionAnimation.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="GameExplosionAnimation"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\Src\GameEmitFigure.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="GameEmitFigure"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\Src\GameFigureUnit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="GameFigureUnit"/>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

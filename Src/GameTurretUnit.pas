@@ -17,32 +17,46 @@ type
 
   TTurret = class
   protected
-    function GetAimStickX: Single;
-    function GetAimStickY: Single;
-    function GetRotationPointX: Single;
-    function GetRotationPointY: Single;
-    function GetAimLength: Single;
+    function GetAimVectorX: Single;
+    function GetAimVectorY: Single;
+    function GetAimStickX: Single; inline;
+    function GetAimStickY: Single; inline;
+    function GetRotationPointX: Single; inline;
+    function GetRotationPointY: Single; inline;
+    function GetAimLength: Single; inline;
+  public
+    property AimVectorX: Single read GetAimVectorX;
+    property AimVectorY: Single read GetAimVectorY;
     property AimStickX: Single read GetAimStickX;
     property AimStickY: Single read GetAimStickY;
     property RotationPointX: Single read GetRotationPointX;
     property RotationPointY: Single read GetRotationPointY;
     property AimLength: Single read GetAimLength;
-  public
-    procedure Draw;
+    procedure Draw; inline;
   end;
 
 implementation
 
 { TTurret }
 
+function TTurret.GetAimVectorX: Single;
+begin
+  result := - (300 - mouse_X) / AimLength * DefaultTurretRadius;
+end;
+
+function TTurret.GetAimVectorY: Single;
+begin
+  result := - (600 - mouse_Y) / AimLength * DefaultTurretRadius;
+end;
+
 function TTurret.GetAimStickX: Single;
 begin
-  result := 300 - (300 - mouse_X) / AimLength * DefaultTurretRadius;
+  result := 300 + AimVectorX;
 end;
 
 function TTurret.GetAimStickY: Single;
 begin
-  result := 600 - (600 - mouse_Y) / AimLength * DefaultTurretRadius;
+  result := 600 + AimVectorY;
 end;
 
 function TTurret.GetRotationPointX: Single;
@@ -62,8 +76,8 @@ end;
 
 procedure TTurret.Draw;
 begin
-  pr2d_Circle(300, 600, DefaultTurretRadius, DefaultTurretColor, 255 div 3);
-  pr2d_Line(300, 600, AimStickX, AimStickY, $FF0000, 255 div 3);
+  pr2d_Circle(300, 600, DefaultTurretRadius, DefaultTurretColor, 255 div 2);
+  pr2d_Line(300, 600, AimStickX, AimStickY, $FF0000, 255 div 2);
 end;
 
 end.

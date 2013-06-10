@@ -7,16 +7,19 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   GameApplicationUnit, GameLogUnit, GameConstUnit, GameTurretUnit,
-  GameThingUnit, GameMathUnit
-{ you can add units after this };
+  GameThingUnit, GameBullletUnit, GameExplosionAnimation, GameEmitFigure,
+GameFigureUnit;
 
 var
   Application: TGameApplication;
 begin
   WriteLogMessage('Entered main routine...');
+  Randomize;
   Application := TGameApplication.Create;
   Application.Run;
   Application.Free;
   WriteLogMessage('Exiting main routine...');
 end.
+
+// MEWO
 
