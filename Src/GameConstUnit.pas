@@ -22,6 +22,7 @@ const
   DefaultInitialLives = 10;
   DefaultFontName = 'Anonymous Pro-Regular-11pt.zfi';
   DefaultReloadTime = 500;
+  DefaultDelayedExplosionDelay = 300;
 
 implementation
 

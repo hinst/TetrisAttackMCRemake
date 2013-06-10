@@ -61,7 +61,7 @@ var
 begin
   distance := m_Distance(aX, aY, FX + FW / 2, FY + FW / 2);
   result := distance < FW / 2 + aR;
-  WriteLogMessage(FloatToStr(distance));
+  //WriteLogMessage(FloatToStr(distance));
 end;
 
 end.
