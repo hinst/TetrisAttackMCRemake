@@ -6,7 +6,8 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  GameApplicationUnit, GameLogUnit, GameConstUnit, GameTurretUnit, GameThingUnit
+  GameApplicationUnit, GameLogUnit, GameConstUnit, GameTurretUnit,
+  GameThingUnit, GameMathUnit
 { you can add units after this };
 
 var
