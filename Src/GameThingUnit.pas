@@ -13,7 +13,7 @@ type
   protected
     FDead: Boolean;
   public
-    property Dead: Boolean read FDead;
+    property Dead: Boolean read FDead write FDead;
     procedure Draw; virtual;
     procedure Update(const aTime: Double); virtual;
     function Touches(const aX, aY, aR: Single): Boolean; virtual;

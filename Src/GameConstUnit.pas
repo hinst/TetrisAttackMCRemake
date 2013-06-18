@@ -10,6 +10,7 @@ const
   DefaultBulletSpeedModifier = 2;
   DefaultExplosionRadius = 60;
   DefaultExplosionAnimationTime = 1000;
+  DefaultFigureExplosionAnimationTime = 600;
   DefaultExplosionAnimationColor = $FFFF00;
   DefaultExplosionAnimationOuterColor = $FF0000;
   DefaultExplosionAnimationAlphaColor = 255;

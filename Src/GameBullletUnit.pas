@@ -46,6 +46,38 @@ type
 
 implementation
 
+{ TGameBullet }
+
+constructor TGameBullet.Create(const aTurret: TTurret);
+begin
+  inherited Create;
+  FX := aTurret.RotationPointX;
+  FY := aTurret.RotationPointY;
+  FSpeedX := aTurret.AimVectorX * DefaultBulletSpeedModifier;
+  FSpeedY := aTurret.AimVectorY * DefaultBulletSpeedModifier;
+  FColor := $FFFF00;
+end;
+
+procedure TGameBullet.Draw;
+begin
+  pr2d_Circle(FX, FY, DefaultBulletRadius, FColor);
+end;
+
+procedure TGameBullet.Update(const aTime: Double);
+begin
+  FX := FX + FSpeedX * aTime / 1000;
+  FY := FY + FSpeedY * aTime / 1000;
+  if
+    FY + DefaultBulletRadius div 2 < 0
+  then
+    FDead := True;
+end;
+
+function TGameBullet.Touches(const aX, aY, aR: Single): Boolean;
+begin
+  result := m_Distance(aX, aY, FX, FY) < aR + DefaultBulletRadius;
+end;
+
 { TGameBulletDelayedExplosion }
 
 constructor TGameBulletDelayedExplosion.Create(const aBullet: TGameBullet);
@@ -80,38 +112,6 @@ begin
     FTimeLeft < 0
   then
     FDead := True;
-end;
-
-{ TGameBullet }
-
-constructor TGameBullet.Create(const aTurret: TTurret);
-begin
-  inherited Create;
-  FX := aTurret.RotationPointX;
-  FY := aTurret.RotationPointY;
-  FSpeedX := aTurret.AimVectorX * DefaultBulletSpeedModifier;
-  FSpeedY := aTurret.AimVectorY * DefaultBulletSpeedModifier;
-  FColor := $FFFF00;
-end;
-
-procedure TGameBullet.Draw;
-begin
-  pr2d_Circle(FX, FY, DefaultBulletRadius, FColor);
-end;
-
-procedure TGameBullet.Update(const aTime: Double);
-begin
-  FX := FX + FSpeedX * aTime / 1000;
-  FY := FY + FSpeedY * aTime / 1000;
-  if
-    FY + DefaultBulletRadius div 2 < 0
-  then
-    FDead := True;
-end;
-
-function TGameBullet.Touches(const aX, aY, aR: Single): Boolean;
-begin
-  result := m_Distance(aX, aY, FX, FY) < aR + DefaultBulletRadius;
 end;
 
 end.

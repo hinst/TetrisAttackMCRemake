@@ -29,6 +29,7 @@ type
     procedure RT(const aY: Single; const s: string);
     procedure CT(const aY: Single; const s: string);
     procedure DrawHelpText;
+    procedure DrawFailureText;
   public
     property DrawHelpEnabled: Boolean read FDrawHelpEnabled write FDrawHelpEnabled;
     constructor Create(const aState: TGameState);
@@ -68,9 +69,14 @@ begin
   CT(50, 'Д:О  Зажать левую кнопку: стрелять с максимально возможной скоростью');
   CT(80, 'О:Д  Зажать правую кнопку: зафиксировать ближайший снаряд');
   CT(105, 'О:Х  Отпустить правую кнопку: взорвать зафиксированный снаряд');
-  CT(135, 'Ф1  Справка');
-  CT(150, 'ПРОБЕЛ  Пауза');
+  CT(130, 'Ф1  Справка');
+  CT(155, 'ПРОБЕЛ  Пауза');
   CT(550, '(Игра приостанавливается на время показа экрана справки)');
+end;
+
+procedure TPresentation.DrawFailureText;
+begin
+  text_Draw(FFont, 300, 300, 'П О Т Р А Ч Е Н О', TEXT_HALIGN_CENTER or TEXT_VALIGN_CENTER);
 end;
 
 constructor TPresentation.Create(const aState: TGameState);
@@ -81,7 +87,7 @@ end;
 
 procedure TPresentation.Startup;
 begin
-  FFont := font_LoadFromFile(DefaultFontName);
+  FFont := font_LoadFromFile(ExtractFilePath(ParamStr(0)) + DefaultFontName);
 end;
 
 procedure TPresentation.Draw;
@@ -90,14 +96,21 @@ begin
   DrawVisualFieldSeparator;
   RT(25, 'Кадров в секунду: ' + IntToStr(zgl_Get(RENDER_FPS )));
   RT(50, 'Жизней осталось: ' + IntToStr(FState.LivesLeft));
-  RT(75, 'Перезарядка:');
-  pr2d_Line(600, 85, 600 + abs(200 * FState.ReloadTimeLeft / DefaultReloadTime), 85, $FF0000);
-  RT(105, 'Счёт: ' + IntToStr(FState.Score));
+  pr2d_Line(600, 60, 600 + abs(200 * FState.LivesLeft / DefaultInitialLives), 60, $00FF00);
+  RT(80, 'Перезарядка:');
+  pr2d_Line(600, 90, 600 + abs(200 * FState.ReloadTimeLeft / DefaultReloadTime), 90, $FF0000);
+  RT(110, 'Счёт: ' + IntToStr(FState.Score));
+  RT(135, 'Следующая бомба:');
+  pr2d_Line(600, 145, 600 + abs(200 * FState.TimeSinceLast / FState.EmitTime), 145, $FFFF00);
   RT(550, 'СПРАВКА: Ф1');
   if
     DrawHelpEnabled
   then
     DrawHelp; // *OKAY FACE*
+  if
+    FState.LivesLeft = 0
+  then
+    DrawFailureText;
 end;
 
 procedure TPresentation.DrawHelp;

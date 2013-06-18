@@ -11,7 +11,7 @@ implementation
 
 procedure WriteLogMessage(const s: string);
 begin
-  WriteLN(s);
+  //WriteLN(s);
 end;
 
 end.

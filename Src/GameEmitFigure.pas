@@ -6,6 +6,7 @@ uses
   GameThingUnit,
   GameFigureUnit,
   GameConstUnit,
+  GameStateUnit,
   GameLogUnit;
 
 type
@@ -15,9 +16,9 @@ type
   TGameEmitFigure = class
   protected
     FThings: TGameThingList;
-    FTimeSinceLast: Double;
-    FEmitTime: Double;
     FFallSpeed: Single;
+    FState: TGameState;
+    FCurrentSpeedModifier: Single;
     procedure Emit;
     procedure Emit(const aX, aY: Integer);
     procedure EmitSquare(const aX: Integer);
@@ -29,8 +30,9 @@ type
     procedure EmitRThingie3(const aX: Integer);
     procedure EmitRThingie4(const aX: Integer);
   public
-    constructor Create(const aThingList: TGameThingList);
+    constructor Create(const aThingList: TGameThingList; const aState: TGameState);
     procedure Update(const aTime: Double);
+    procedure EmitHouses;
     destructor Destroy; override;
   end;
 
@@ -42,6 +44,7 @@ procedure TGameEmitFigure.Emit;
 var
   x: Integer;
 begin
+  FCurrentSpeedModifier := 1 + 0.5 * (5-random(10)) / 5;
   WriteLogMessage('Now emitting figure...');
   x := random(59);
   case random(6) of
@@ -76,7 +79,11 @@ procedure TGameEmitFigure.Emit(const aX, aY: Integer);
 var
   f: TGameThing;
 begin
-  f := TFigure.Create(aX * DefaultFigureWidth, aY * DefaultFigureWidth, FFallSpeed);
+  f :=
+    TFigure.Create(
+      aX * DefaultFigureWidth,
+      aY * DefaultFigureWidth,
+      FFallSpeed * FCurrentSpeedModifier);
   FThings.Add(f);
 end;
 
@@ -144,24 +151,44 @@ begin
   Emit(aX + 1, 2);
 end;
 
-constructor TGameEmitFigure.Create(const aThingList: TGameThingList);
+constructor TGameEmitFigure.Create(const aThingList: TGameThingList; const aState: TGameState);
 begin
   inherited Create;
   FThings := aThingList;
-  FTimeSinceLast := 0;
-  FEmitTime := DefaultInitialEmitTime;
+  FState := aState;
   FFallSpeed := DefaultInitialFallSpeed;
 end;
 
 procedure TGameEmitFigure.Update(const aTime: Double);
 begin
-  FTimeSinceLast += aTime;
+  FState.TimeSinceLast += aTime;
   if
-    FTimeSinceLast >= FEmitTime
+    FState.TimeSinceLast >= FState.EmitTime
   then
   begin
     Emit;
-    FTimeSinceLast := 0;
+    FState.TimeSinceLast := 0;
+  end;
+end;
+
+procedure TGameEmitFigure.EmitHouses;
+  procedure EmitHouse(const aX: Integer);
+  begin
+    Emit(aX, 59);
+    Emit(aX + 1, 59);
+    Emit(aX, 58);
+    Emit(aX + 1, 58);
+    Emit(aX, 57);
+    Emit(aX + 1, 57);
+  end;
+
+var
+  i: Integer;
+begin
+  for i := 1 to 59 do
+  begin
+    if (i mod 5 = 0) and (i <> 30) and (i <> 25) and (i <> 35) then
+      EmitHouse(i - 1);
   end;
 end;
 

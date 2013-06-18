@@ -51,13 +51,17 @@ type
     procedure UserExplode;
     function FindBulletToExplode: TGameBullet;
     procedure PerformBulletExplosion(const aX, aY: Single);
+    procedure PerformFigureExplosion(const aX, aY: Single);
     procedure ExplodeThings(const aX, aY, aR: Single);
+    procedure ExplodeDirectHits;
     procedure DelayBulletExplosion(const aBullet: TGameBullet);
     procedure DrawThings;
     procedure DrawTargetBulletPointer;
     procedure DrawTargetBulletMarker;
     procedure UpdateThings(const aTime: Double);
     procedure RemoveDeadThings;
+    procedure ProcessDeadThing(const aThing: TGameThing);
+    procedure ProcessDeadFigure(const aFigure: TFigure);
     procedure ReleaseThings;
     procedure MouseRelease(const aButton: Byte);
   public
@@ -182,6 +186,14 @@ begin
   ExplodeThings(aX, aY, animation.R);
 end;
 
+procedure TGameApplication.PerformFigureExplosion(const aX, aY: Single);
+var
+  animation: TFigureExplosionAnimation;
+begin
+  animation := TFigureExplosionAnimation.Create(aX, aY);
+  FThings.Add(animation);
+end;
+
 procedure TGameApplication.ExplodeThings(const aX, aY, aR: Single);
 var
   i: Integer;
@@ -191,19 +203,74 @@ begin
   begin
     thing := FThings[i];
     if
+      thing.Dead
+    then
+      continue;
+    if
       thing.Touches(aX, aY, aR)
     then
     begin
-      FThings.Delete(i);
+      thing.Dead := true;
       if
         thing is TGameBullet
       then
+      begin
         DelayBulletExplosion(TGameBullet(thing));
+        if
+          FTargetBullet = thing
+        then
+          FTargetBullet := nil;
+      end;
       if
         thing is TFigure
       then
+      begin
+        WriteLogMessage('Figure exploded');
+        PerformFigureExplosion(TFigure(thing).X, TFigure(thing).Y);
         FState.Score += 1;
-      thing.Free;
+      end;
+    end;
+  end;
+end;
+
+procedure TGameApplication.ExplodeDirectHits;
+var
+  i: Integer;
+  thing: TGameThing;
+  thing2: TGameThing;
+  bullet: TGameBullet;
+  figure: TFigure;
+  explode: boolean;
+begin
+  for thing in FThings do
+  begin
+    if
+      thing.Dead
+    then
+      continue;
+    if
+      thing is TGameBullet
+    then
+    begin
+      bullet := TGameBullet(thing);
+      explode := false;
+      for thing2 in FThings do
+      begin
+        if
+          thing.Dead
+        then
+          continue;
+        if thing2 is TFigure then
+        begin
+          figure := TFigure(thing2);
+          explode := explode or figure.Touches(bullet.X, bullet.Y, DefaultBulletRadius);
+        end;
+      end;
+      if explode then
+      begin
+        bullet.Dead := true;
+        PerformBulletExplosion(bullet.X, bullet.Y);
+      end;
     end;
   end;
 end;
@@ -222,7 +289,10 @@ var
 begin
   for thing in FThings do
   begin
-    thing.Draw;
+    if
+      not thing.Dead
+    then
+      thing.Draw;
   end;
 end;
 
@@ -258,16 +328,14 @@ var
 begin
   for thing in FThings do
   begin
-    thing.Update(aTime);
+    if
+      not thing.Dead
+    then
+      thing.Update(aTime);
   end;
 end;
 
 procedure TGameApplication.RemoveDeadThings;
-  procedure PerformDelayedExplosion(const a: TGameBulletDelayedExplosion);
-  begin
-    PerformBulletExplosion(a.X, a.Y);
-  end;
-
 var
   i: integer;
   thing: TGameThing;
@@ -280,12 +348,44 @@ begin
     then
     begin
       FThings.Delete(i);
-      if
-        thing is TGameBulletDelayedExplosion
-      then
-        PerformDelayedExplosion(TGameBulletDelayedExplosion(thing));
+      ProcessDeadThing(thing);
       thing.Free;
     end;
+  end;
+end;
+
+procedure TGameApplication.ProcessDeadThing(const aThing: TGameThing);
+  procedure PerformDelayedExplosion(const a: TGameBulletDelayedExplosion);
+  begin
+    PerformBulletExplosion(a.X, a.Y);
+  end;
+begin
+  if
+    aThing is TGameBulletDelayedExplosion
+  then
+    PerformDelayedExplosion(TGameBulletDelayedExplosion(aThing));
+  if
+    aThing is TFigure
+  then
+    ProcessDeadFigure(TFigure(aThing));
+  if
+    FTargetBullet = aThing
+  then
+  begin
+    WriteLogMessage('TargetBulletFlewAway');
+    FTargetBullet := nil;
+  end;
+end;
+
+procedure TGameApplication.ProcessDeadFigure(const aFigure: TFigure);
+begin
+  if
+    aFigure.Fail
+  then
+  begin
+    WriteLogMessage('Figure failed');
+    PerformBulletExplosion(aFigure.X, aFigure.Y);
+    FState.LivesLeft := FState.LivesLeft - 1;
   end;
 end;
 
@@ -314,7 +414,8 @@ begin
   FState := TGameState.Create;
   FTurret := TTurret.Create;
   FThings := TGameThingList.Create;
-  FEmitter := TGameEmitFigure.Create(FThings);
+  FEmitter := TGameEmitFigure.Create(FThings, FState);
+  FEmitter.EmitHouses;
   FPresentation := TPresentation.Create(FState);
 end;
 
@@ -332,11 +433,11 @@ procedure TGameApplication.Draw;
 begin
   batch2d_Begin;
   DrawThings;
-  FPresentation.Draw;
   DrawTurret;
   if mouse_Down(M_BRIGHT) then
     DrawTargetBulletPointer;
   DrawTargetBulletMarker;
+  FPresentation.Draw;
   batch2d_End;
 end;
 
@@ -372,6 +473,7 @@ begin
   FState.Update(aTime);
   FEmitter.Update(aTime);
   UpdateThings(aTime);
+  ExplodeDirectHits;
   RemoveDeadThings;
   if
     not mouse_Down(M_BRIGHT)

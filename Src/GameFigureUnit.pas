@@ -21,7 +21,11 @@ type
     FX, FY: Single;
     FW: Single;
     FSpeedY: Single;
+    function GetFail: Boolean;
   public
+    property X: Single read FX;
+    property Y: Single read FY;
+    property Fail: Boolean read GetFail;
     constructor Create(const aX, aY, aSpeedY: Single);
     procedure Draw; override;
     procedure Update(const aTime: Double); override;
@@ -31,6 +35,11 @@ type
 implementation
 
 { TFigure }
+
+function TFigure.GetFail: Boolean;
+begin
+  result := FY > 600;
+end;
 
 constructor TFigure.Create(const aX, aY, aSpeedY: Single);
 begin
@@ -50,7 +59,7 @@ procedure TFigure.Update(const aTime: Double);
 begin
   FY += FSpeedY * aTime / 1000;
   if
-    FY > 600
+    Fail
   then
     FDead := True;
 end;

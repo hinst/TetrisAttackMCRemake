@@ -102,6 +102,13 @@ end;
 constructor TFigureExplosionAnimation.Create(const aX, aY: Single);
 begin
   inherited Create(aX, aY);
+  FInitialTimeLeft := DefaultFigureExplosionAnimationTime;
+  FTimeLeft := FInitialTimeLeft;
+  FColor := DefaultExplosionAnimationColor;
+  FOuterColor := DefaultExplosionAnimationOuterColor;
+  FAlpha := DefaultExplosionAnimationAlphaColor;
+  FOuterAlpha := DefaultExplosionAnimationOuterAlphaColor;
+  FR := DefaultFigureWidth;
 end;
 
 end.
